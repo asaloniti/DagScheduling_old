@@ -64,7 +64,7 @@ public class FullLegalityChecker implements LegalityCheckerInterface {
                 String t_id1 = sip1.key;
                 int ts1 = sip1.value;
                 int tf1 = aSolution.getFinishTime(t_id1);
-                if (!((ts0 < tf0) && (tf0 <= ts1) && (ts1 < tf1))) {
+                if (!((ts0 <= tf0) && (tf0 <= ts1) && (ts1 <= tf1))) {
                     System.out
                             .println("#### Violation of exclusive processor allocation ####");
                     logger.error(String
