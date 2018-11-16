@@ -147,5 +147,9 @@ public class Task implements Cloneable {
 	public double getRankUpward() {
 		return ranku;
 	}
+	
+	public double getRankDownward() {
+		return rankd;
+	}
 
 }

@@ -10,6 +10,7 @@ import model.DAGSolution;
 import model.FullLegalityChecker;
 import model.Problem;
 import solver.SimpleListScheduling;
+import solver.CPHeft;
 import solver.Heft;
 import utils.DAGImporter;
 
@@ -33,7 +34,8 @@ public class MainApp {
 			System.out.println("2. Topological Sort of DAG Nodes");
 			System.out.println("3. Start Time Minimization + visualize schedule");
 			System.out.println("4. Heft + visualize schedule");
-			System.out.println("5. Load solution");
+			System.out.println("5. CPHeft + visualize schedule");
+			System.out.println("6. Load solution");
 			System.out.println("0. Exit");
 			int c = in.nextInt();
 			if (c == 1) {
@@ -43,9 +45,11 @@ public class MainApp {
 			} else if (c == 3) {
 				method3();
 			} else if (c == 4) {
-				method4();	
+				method4();
 			} else if (c == 5) {
-				method5();	
+				method5();
+			} else if (c == 6) {
+				method6();	
 			}else if (c == 0) {
 				flag = false;	
 				in.close();
@@ -97,8 +101,24 @@ public class MainApp {
 		else
 			System.out.println("Solution is NOT feasible");
 	}
-
+	
 	void method5() {
+		loadDataset(loadFile("txt"));
+		CPHeft sls = new CPHeft(aProblem);
+		sls.solve();
+		VisualizeJFrame app = new VisualizeJFrame(aProblem, sls.getSolution(),
+				480, 640, filename);
+		app.createAndShowGUI();
+
+		boolean feasible = aProblem.isFeasible(sls.getSolution());
+		if (feasible)
+			System.out
+					.println("Solution is feasible according to EXCLUSIVE PROCESSOR ALLOCATION and PRECEDENCE CONSTRAINTS");
+		else
+			System.out.println("Solution is NOT feasible");
+	}
+
+	void method6() {
 		loadDataset(loadFile("txt"));
 		loadSolution(loadFile("sol"));
 		FullLegalityChecker flc = new FullLegalityChecker(aProblem);

@@ -192,13 +192,13 @@ public class PlanetaGen {
 			}
 		}
 		sb.append("\nDependencies:" + dependencies.size() + "\n");
-		sb.append("# from_task_id to_task_id weight" + "\n");
+		sb.append("# from_task_id to_task_id weight");
 		List<Pair> deps = new ArrayList<>(dependencies);
 		Collections.sort(deps);
 		int i = 0;
 		for (Pair pair : deps) {
 			i++;
-			sb.append(String.format("%d %d %d \n", pair.x, pair.y, comm_costs.get(i-1)));
+			sb.append(String.format("\n%d %d %d", pair.x, pair.y, comm_costs.get(i-1)));
 		}
 		System.out.println(sb.toString());
 		PrintWriter out;

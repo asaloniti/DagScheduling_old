@@ -1,21 +1,22 @@
 digraph small {
 0 -> 1 [ label = 16 ];
-0 -> 6 [ label = 4 ];
-1 -> 2 [ label = 9 ];
-1 -> 10 [ label = 49 ];
-2 -> 3 [ label = 15 ];
-3 -> 4 [ label = 10 ];
-3 -> 12 [ label = 11 ];
-4 -> 5 [ label = 7 ];
-5 -> 11 [ label = 13 ];
+0 -> 3 [ label = 4 ];
+0 -> 6 [ label = 0 ];
+0 -> 11 [ label = 9 ];
+1 -> 2 [ label = 60 ];
+1 -> 10 [ label = 80 ];
+2 -> 13 [ label = 3 ];
+3 -> 4 [ label = 4 ];
+3 -> 12 [ label = 16 ];
+4 -> 5 [ label = 8 ];
+5 -> 13 [ label = 3 ];
 6 -> 7 [ label = 13 ];
-6 -> 8 [ label = 4 ];
-7 -> 8 [ label = 16 ];
-8 -> 9 [ label = 10 ];
-8 -> 10 [ label = 3 ];
-9 -> 10 [ label = 2 ];
-10 -> 13 [ label = 18 ];
-11 -> 12 [ label = 74 ];
-12 -> 13 [ label = 15 ];
+6 -> 8 [ label = 20 ];
+7 -> 13 [ label = 3 ];
+8 -> 9 [ label = 17 ];
+9 -> 13 [ label = 3 ];
+10 -> 13 [ label = 15 ];
+11 -> 12 [ label = 8 ];
+12 -> 13 [ label = 1 ];
  }
 
