@@ -21,7 +21,8 @@ public class CPHeft extends BaseSolver {
 		rank = new HashMap<String, Integer>();
 		for (Task aTask : aProblem.getTasks()) {
 			rank.put(aTask.getId(), -1);
-		}		
+		}
+		myrank = new HashMap<String, Integer>();		
 	}
 
 	// HEFT original
@@ -81,129 +82,107 @@ public class CPHeft extends BaseSolver {
 			}
 		}
 		
-				
-		for (int i = 0; i < T; i++) {
-			logger.info(String.format("i=%d taskId=%s c_ranku=%f c_p=%f",i, taskIds[i] ,c_ranku[i], c_p[i]));
-		}
-		
-		System.out.println("...................................");
+//		System.out.println(".............(upward rank)  and   (upward rank + downward rank)...............");	
+//		
+//		for (int i = 0; i < T; i++) {
+//			logger.info(String.format("i=%d taskId=%s c_ranku=%f c_p=%f",i, taskIds[i] ,c_ranku[i], c_p[i]));
+//		}
+//		
+		System.out.println(".................... critical tasks .........................");
 		
 		cprank = new HashMap<String, Integer>();
 		for (int i = 0; i < T; i++) {
 			rank.put(taskIds[i], i);
 			aProblem.getTask(taskIds[i]).setRank(i);
 			//logger.info(String.format("----> task=%s", taskIds[i]));
-			if (c_p[i] == c_p[0]) {
+			if (Math.abs(c_p[i] - c_p[0])<0.001) {
 				cprank.put(taskIds[i], i);
 				logger.info(String.format("i=%d --> task=%s c_p=%f", i, taskIds[i], c_p[i]));
 			}
 		}
-		cprank.put(taskIds[9], 9);
-		logger.info(String.format("c_p[9]=%f --> task=%s c_p[0]=%f", c_p[9], taskIds[9], c_p[0]));
+		// text.txt
+//		cprank.put(taskIds[9], 9);
+//		logger.info(String.format("c_p[9]=%f --> task=%s c_p[0]=%f", c_p[9], taskIds[9], c_p[0]));
 	
-		
-		System.out.println("._____________________________..");
-		
-		for (String task_id : rank.keySet()) {
-			logger.info(String.format("task=%s", task_id));
-			for (String parentTask_id : aProblem.getTask(task_id).getDependedOnTasks()) {
-				logger.info(String.format("parenttask=%s", parentTask_id));
-			}
-		}
-		
-		System.out.println(".+++++++++++++++++++++++++++++..");
-		
-		myrank = new HashMap<String, Integer>();
-		int i=0;
-		//myrank.put(taskIds[0], i);
-		//int value0 = myrank.get(taskIds[0]);
-		//logger.info(String.format("myrank=%d task=%s", i, taskIds[0]));
-	//	cprank.remove(taskIds[0]);
-		for (String task_id : cprank.keySet()) {
-			logger.info(String.format("  critical_task : %s", task_id));
-			int length = aProblem.getTask(task_id).getDependedOnTasks().size();
-			if (length == 1) {
-				String parentTask_id = aProblem.getTask(task_id).getDependedOnTasks().get(0);
-				if (myrank.containsKey(parentTask_id)==false){
-					myrank.put(parentTask_id, i++);
-					logger.info(String.format("myrank=%d parenttask_id=%s", myrank.get(parentTask_id), parentTask_id));
-				}
-			}
-			else {
-				int[] ptur = new int[length];
-				String[] ptids = new String[length]; 
-				int j=0;
-				for (String parentTask_id : aProblem.getTask(task_id).getDependedOnTasks()) {
-					if (myrank.containsKey(parentTask_id)){
-						length--;
-					}
-					else {
-						ptur[j] = aProblem.getTask(parentTask_id).getRank();
-						ptids[j] = parentTask_id;
-						j++;
-					}
-				}
-			
-				for (int p = 1; p < length; p++) {
-					for (int q = length - 1; q >= p; q--) 
-						if ((ptur[q - 1] > ptur[q]) || ((ptur[q - 1] == ptur[q])  && (aProblem.getTask(ptids[q - 1]).getDependedOnTasks().size() > aProblem.getTask(ptids[q]).getDependedOnTasks().size()))){
-							String temp = ptids[q];
-							ptids[q] = ptids[q - 1];
-							ptids[q - 1] = temp;
-							int temp2 = ptur[q];
-							ptur[q] = ptur[q - 1];
-							ptur[q - 1] = temp2;
-						}
-				}
-				for (int p = 0; p < length; p++) {
-					myrank.put(ptids[p], i++);
-					logger.info(String.format("myrank=%d parenttask_id=%s rank=%d ", myrank.get(ptids[p]), ptids[p], ptur[p]));
-				}
-			}
-			myrank.put(task_id, i++);
-			logger.info(String.format("myrank=%d critical_task_id=%s", myrank.get(task_id), task_id));
-		
-		}
-		System.out.println("........................................");
-		
-//		 System.out.println("\nRANKING OF TASKS BASED ON CPHEFT");
-//		 for (int j = 0; j < T; j++) {
-//			 logger.info(String.format("Rank=%d value=%.2f task=%s", j, c_ranku[j], taskIds[j]));
-//		 }
-		
-	}
-		
-	
-//					
-//				for (int p = 1; p < parents; p++) {
-//					for (int t = parents - 1; t >= p; t--) {
-//						if ((c_ranku[t - 1] < c_ranku[t]) || ((c_ranku[t - 1] == c_ranku[t]) && (aProblem.getTask(taskIds[t - 1]).getDependedOnTasks().size() > aProblem.getTask(taskIds[t]).getDependedOnTasks().size()))){
-//							String temp = taskIds[t];
-//							taskIds[t] = taskIds[t - 1];
-//							taskIds[t - 1] = temp;
-//							double temp2 = c_ranku[t];
-//							c_ranku[t] = c_ranku[t - 1];
-//							c_ranku[t - 1] = temp2;
-//						}
-//					}
-//				}
-//				
-//				
-//				
-//				for (int p = 0; p < parents; p++) {
-//					rank.put(taskIds[p], p);
-//					aProblem.getTask(taskIds[p]).setRank(p);
-//					 logger.info(String.format("Rank=%d value=%.2f task=%s", i, c_ranku[i], taskIds[i]));
-//				}
-//				
+//		
+//		System.out.println("_______________tasks and their parents_______________________");
+//	
+//		for (String task_id : rank.keySet()) {
+//			logger.info(String.format("task=%s", task_id));
+//			for (String parentTask_id : aProblem.getTask(task_id).getDependedOnTasks()) {
+//				logger.info(String.format("parenttask=%s", parentTask_id));
 //			}
 //		}
-//		System.out.println("\nSORTING TASKS BASED ON CPHEFT");
-//		for (int i = 0; i < T; i++) {
-//			 logger.info(String.format("Rank=%d value=%.2f task=%s", i, c_ranku[i], taskIds[i]));
-//		 }
 		
-
+		System.out.println("******************** the queue *********************");
+		
+//		int t=0;
+		for (String task_id : cprank.keySet()) {
+			System.out.println("cprank keySet : "+cprank.keySet().toString());
+			logger.info(String.format("  critical_task : %s", task_id));
+//			update_myrank(task_id, t++);
+			update_myrank(task_id);
+			System.out.println("___________________________________________________________________________");
+		}		
+	}
+	
+	
+	protected void update_myrank(String t_id) {
+		int t=0;
+		for(Integer x: myrank.values()) {
+			if (x>t)
+				t=x;
+		}
+		int length = aProblem.getTask(t_id).getDependedOnTasks().size();
+		logger.info(String.format(" number of parents:%d            t=%d", length, t)); 
+		int[] ptur = new int[length];  //order of rank upward values
+		String[] ptids = new String[length]; 
+		int j=0;
+		for (String parentTask_id : aProblem.getTask(t_id).getDependedOnTasks()) {
+//			System.out.println("myrank keySet : " + myrank.keySet().toString());
+//			System.out.println("myrank values : " + myrank.values());
+			logger.info(String.format("*** t_id=%s parenttask_id=%s", t_id, parentTask_id));
+			if (myrank.containsKey(parentTask_id)){
+				length--;
+				logger.info(String.format(" -- length=%d", length));
+			}
+			else {
+				ptur[j] = aProblem.getTask(parentTask_id).getRank();
+				ptids[j] = parentTask_id;
+				//logger.info(String.format("j=%d ptur=%d parenttask_id=%s", j, ptur[j], parentTask_id));
+				j++;
+			}
+		}
+			
+		for (int p = 1; p < length; p++) {
+			for (int q = length - 1; q >= p; q--) {
+				if ((ptur[q - 1] > ptur[q]) || ((ptur[q - 1] == ptur[q])  && (aProblem.getTask(ptids[q - 1]).getDependedOnTasks().size() > aProblem.getTask(ptids[q]).getDependedOnTasks().size()))){
+					String temp = ptids[q];
+					ptids[q] = ptids[q - 1];
+					ptids[q - 1] = temp;
+					int temp2 = ptur[q];
+					ptur[q] = ptur[q - 1];
+					ptur[q - 1] = temp2;
+				}
+			}
+		}
+	
+		for (int p = 0; p < length; p++) {
+			update_myrank(ptids[p]);
+			t++;
+			myrank.put(ptids[p], t);
+			//logger.info(String.format("myrank=%d      task_id=%s", myrank.get(ptids[p]), ptids[p]));
+			System.out.println("myrank keySet : " + myrank.keySet().toString());
+			System.out.println("myrank values : " + myrank.values());
+			//logger.info(String.format("myrank=i=%d parenttask_id=%s rank=%d ", myrank.get(ptids[p]), ptids[p], ptur[p]));
+		}
+		t++;
+		myrank.put(t_id, t);
+		logger.info(String.format("   myrank=%d     task_id=%s", myrank.get(t_id), t_id));
+		
+	}
+	
+	
 
 	protected String findTaskHavingPriority(int priority) {
 		for (String task_id : myrank.keySet()) {
