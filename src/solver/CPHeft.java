@@ -64,8 +64,7 @@ public class CPHeft extends BaseSolver {
 			k++;
 		}
 		
-		//logger.info(String.format("t1=%f t10=%f",  c_p[0], c_p[9]));
-		
+				
 		for (int i = 1; i < T; i++) {
 			for (int j = T - 1; j >= i; j--) {
 				if (c_ranku[j - 1] < c_ranku[j]) {
@@ -94,15 +93,11 @@ public class CPHeft extends BaseSolver {
 		for (int i = 0; i < T; i++) {
 			rank.put(taskIds[i], i);
 			aProblem.getTask(taskIds[i]).setRank(i);
-			//logger.info(String.format("----> task=%s", taskIds[i]));
 			if (Math.abs(c_p[i] - c_p[0])<0.001) {
 				cprank.put(taskIds[i], i);
 				logger.info(String.format("i=%d --> task=%s c_p=%f", i, taskIds[i], c_p[i]));
 			}
 		}
-		// text.txt
-//		cprank.put(taskIds[9], 9);
-//		logger.info(String.format("c_p[9]=%f --> task=%s c_p[0]=%f", c_p[9], taskIds[9], c_p[0]));
 	
 //		
 //		System.out.println("_______________tasks and their parents_______________________");
@@ -116,40 +111,30 @@ public class CPHeft extends BaseSolver {
 		
 		System.out.println("******************** the queue *********************");
 		
-//		int t=0;
+
 		for (String task_id : cprank.keySet()) {
-			System.out.println("cprank keySet : "+cprank.keySet().toString());
-			logger.info(String.format("  critical_task : %s", task_id));
-//			update_myrank(task_id, t++);
+			System.out.println("  critical_task : "+ task_id);
 			update_myrank(task_id);
-			System.out.println("___________________________________________________________________________");
+			System.out.println("_______________________________");
 		}		
 	}
 	
 	
 	protected void update_myrank(String t_id) {
-		int t=0;
-		for(Integer x: myrank.values()) {
-			if (x>t)
-				t=x;
-		}
+		System.out.println("begin myrank values : " + myrank.values());
 		int length = aProblem.getTask(t_id).getDependedOnTasks().size();
-		logger.info(String.format(" number of parents:%d            t=%d", length, t)); 
-		int[] ptur = new int[length];  //order of rank upward values
+		logger.info(String.format(" number of parents:%d            ", length)); 
+		int[] ptur = new int[length];  //the order of rank upward values
 		String[] ptids = new String[length]; 
 		int j=0;
 		for (String parentTask_id : aProblem.getTask(t_id).getDependedOnTasks()) {
-//			System.out.println("myrank keySet : " + myrank.keySet().toString());
-//			System.out.println("myrank values : " + myrank.values());
 			logger.info(String.format("*** t_id=%s parenttask_id=%s", t_id, parentTask_id));
 			if (myrank.containsKey(parentTask_id)){
 				length--;
-				logger.info(String.format(" -- length=%d", length));
 			}
 			else {
 				ptur[j] = aProblem.getTask(parentTask_id).getRank();
 				ptids[j] = parentTask_id;
-				//logger.info(String.format("j=%d ptur=%d parenttask_id=%s", j, ptur[j], parentTask_id));
 				j++;
 			}
 		}
@@ -169,17 +154,17 @@ public class CPHeft extends BaseSolver {
 	
 		for (int p = 0; p < length; p++) {
 			update_myrank(ptids[p]);
-			t++;
-			myrank.put(ptids[p], t);
-			//logger.info(String.format("myrank=%d      task_id=%s", myrank.get(ptids[p]), ptids[p]));
-			System.out.println("myrank keySet : " + myrank.keySet().toString());
-			System.out.println("myrank values : " + myrank.values());
-			//logger.info(String.format("myrank=i=%d parenttask_id=%s rank=%d ", myrank.get(ptids[p]), ptids[p], ptur[p]));
 		}
-		t++;
+		
+		int t=0;
+		for(Integer x: myrank.values()) {
+			if (x>=t)
+				t=x+1;
+		}
 		myrank.put(t_id, t);
 		logger.info(String.format("   myrank=%d     task_id=%s", myrank.get(t_id), t_id));
-		
+		System.out.println("myrank keySet : " + myrank.keySet().toString());
+		System.out.println("myrank values : " + myrank.values());
 	}
 	
 	

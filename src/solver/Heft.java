@@ -79,6 +79,9 @@ public class Heft extends BaseSolver {
 		 for (int i = 0; i < T; i++) {
 			 logger.info(String.format("Rank=%d value=%.2f task=%s", i, c_ranku[i], taskIds[i]));
 		 }
+//		 System.out.println("\n--------------------");
+//		 System.out.println("myrank keySet : " + rank.keySet().toString());
+//		 System.out.println("myrank values : " + rank.values());
 	}
 
 	protected String findTaskHavingPriority(int priority) {
