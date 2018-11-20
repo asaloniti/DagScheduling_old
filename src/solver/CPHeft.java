@@ -121,7 +121,6 @@ public class CPHeft extends BaseSolver {
 	
 	
 	protected void update_myrank(String t_id) {
-		System.out.println("begin myrank values : " + myrank.values());
 		int length = aProblem.getTask(t_id).getDependedOnTasks().size();
 		logger.info(String.format(" number of parents:%d            ", length)); 
 		int[] ptur = new int[length];  //the order of rank upward values
