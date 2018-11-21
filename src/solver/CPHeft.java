@@ -1,6 +1,8 @@
 package solver;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -81,20 +83,19 @@ public class CPHeft extends BaseSolver {
 			}
 		}
 		
-//		System.out.println(".............(upward rank)  and   (upward rank + downward rank)...............");	
-//		
-//		for (int i = 0; i < T; i++) {
-//			logger.info(String.format("i=%d taskId=%s c_ranku=%f c_p=%f",i, taskIds[i] ,c_ranku[i], c_p[i]));
-//		}
-//		
-		System.out.println(".................... critical tasks .........................");
+		System.out.println(".............(upward rank)  and   (upward rank + downward rank)...............");	
 		
-		cprank = new HashMap<String, Integer>();
+		for (int i = 0; i < T; i++) {
+			logger.info(String.format("i=%d taskId=%s c_ranku=%f c_p=%f",i, taskIds[i] ,c_ranku[i], c_p[i]));
+		}
+		
+		System.out.println(".................... critical tasks .........................");
+		List<String> cprank=new ArrayList<String>();
 		for (int i = 0; i < T; i++) {
 			rank.put(taskIds[i], i);
 			aProblem.getTask(taskIds[i]).setRank(i);
 			if (Math.abs(c_p[i] - c_p[0])<0.001) {
-				cprank.put(taskIds[i], i);
+				cprank.add(taskIds[i]);
 				logger.info(String.format("i=%d --> task=%s c_p=%f", i, taskIds[i], c_p[i]));
 			}
 		}
@@ -111,8 +112,9 @@ public class CPHeft extends BaseSolver {
 		
 		System.out.println("******************** the queue *********************");
 		
-
-		for (String task_id : cprank.keySet()) {
+		System.out.println("rank keySet : " + rank.keySet().toString());
+		System.out.println("rank values : " + rank.values());
+		for (String task_id : cprank) {
 			System.out.println("  critical_task : "+ task_id);
 			update_myrank(task_id);
 			System.out.println("_______________________________");

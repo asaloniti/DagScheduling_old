@@ -238,8 +238,8 @@ public class PlanetaGen {
 	private static void small_instance() {
 		double length = 100.0;
 		int processors = 3;
-		int tasks = 20;
-		int fanout = 3;
+		int tasks = 30;
+		int fanout = 4;
 		int maxDistanceFactor = 10;
 		PlanetaGen generator = new PlanetaGen(length, processors, tasks, fanout, maxDistanceFactor);
 		generator.generate();
