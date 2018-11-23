@@ -72,6 +72,7 @@ public class PlanetaGen {
 				aTask.cpu = p;
 				aTask.start = timelines.get(p).get(i);
 				aTask.end = timelines.get(p).get(i + 1);
+				System.out.println("t_s="+ aTask.start + "   t_e="+ aTask.end);//vvvvvvvvvvvvv
 				allTasks.add(aTask);
 			}
 		}
@@ -116,12 +117,12 @@ public class PlanetaGen {
 		start.id = 0;
 		start.cpu = 0;
 		start.start = 0.0;
-		start.end = 0.0;
+		start.end = timelines.get(start.cpu).get(1);
 		GTask end = new GTask();
 		end.id = allTasks.size() + 1;
-		end.cpu = 0;
-		end.start = 0.0;
-		end.end = 0.0;
+		end.cpu = processors-1;
+		end.start = timelines.get(end.cpu).get(1);//????????????????
+		end.end = timelines.get(end.cpu).get(2);//??????????????
 		for (GTask task1 : allTasks) {
 			if (task1.successors.isEmpty()) {
 				task1.addSuccessor(end);
@@ -142,8 +143,12 @@ public class PlanetaGen {
 			List<Integer> cc_of_atask = new ArrayList<Integer>();
 			int comp_c_0 = (int)(t.end - t.start);
 			cc_of_atask.add(comp_c_0);
+			System.out.println();
+			System.out.println("   s=" + t.start + "   e=" + t.end);
+			System.out.println("  comp="+comp_c_0);
 			for (int p = 0; p < processors; p++) {
 				int comp_c_p = randomGenerator.nextInt(comp_c_0 + 1) + (int)(comp_c_0 * 0.5);
+				System.out.println("  p=" + p + "  comp_c_p=" + comp_c_p);
 				cc_of_atask.add(comp_c_p);
 			}
 			comp_costs.add(cc_of_atask);
@@ -238,14 +243,14 @@ public class PlanetaGen {
 	private static void small_instance() {
 		double length = 100.0;
 		int processors = 3;
-		int tasks = 30;
-		int fanout = 4;
+		int tasks = 20;
+		int fanout = 3;
 		int maxDistanceFactor = 10;
 		PlanetaGen generator = new PlanetaGen(length, processors, tasks, fanout, maxDistanceFactor);
 		generator.generate();
 		generator.printDetails();
 		generator.exportToDOT("small");
-		generator.exportToTXT("datasets\\data");
+		generator.exportToTXT("datasets\\data_s");
 	}
 
 	private static void big_instance() {
@@ -258,6 +263,7 @@ public class PlanetaGen {
 		generator.generate();
 		generator.printDetails();
 		generator.exportToDOT("big");
+		generator.exportToTXT("datasets\\data_b");
 	}
 	
 	public static boolean log = false;
@@ -287,5 +293,4 @@ public class PlanetaGen {
 		//big_instance();
 		
 	}
-
 }

@@ -16,7 +16,7 @@ import model.Task;
 public class CPHeft extends BaseSolver {
 	final Logger logger = LoggerFactory.getLogger(CPHeft.class);
 	// rank is a Map having key the task_id and value the rank
-	protected Map<String, Integer> rank, cprank, myrank;
+	protected Map<String, Integer> rank, myrank;
 
 	public CPHeft(Problem aProblem) {
 		super(aProblem);
@@ -27,7 +27,6 @@ public class CPHeft extends BaseSolver {
 		myrank = new HashMap<String, Integer>();		
 	}
 
-	// HEFT original
 	public void solve() {
 		sortByRankUpwardValuesDesc();
 		int T = aProblem.getTasks().size();
@@ -83,53 +82,28 @@ public class CPHeft extends BaseSolver {
 			}
 		}
 		
-		System.out.println(".............(upward rank)  and   (upward rank + downward rank)...............");	
-		
-		for (int i = 0; i < T; i++) {
-			logger.info(String.format("i=%d taskId=%s c_ranku=%f c_p=%f",i, taskIds[i] ,c_ranku[i], c_p[i]));
-		}
-		
-		System.out.println(".................... critical tasks .........................");
 		List<String> cprank=new ArrayList<String>();
 		for (int i = 0; i < T; i++) {
 			rank.put(taskIds[i], i);
 			aProblem.getTask(taskIds[i]).setRank(i);
 			if (Math.abs(c_p[i] - c_p[0])<0.001) {
 				cprank.add(taskIds[i]);
-				logger.info(String.format("i=%d --> task=%s c_p=%f", i, taskIds[i], c_p[i]));
 			}
 		}
 	
-//		
-//		System.out.println("_______________tasks and their parents_______________________");
-//	
-//		for (String task_id : rank.keySet()) {
-//			logger.info(String.format("task=%s", task_id));
-//			for (String parentTask_id : aProblem.getTask(task_id).getDependedOnTasks()) {
-//				logger.info(String.format("parenttask=%s", parentTask_id));
-//			}
-//		}
-		
-		System.out.println("******************** the queue *********************");
-		
-		System.out.println("rank keySet : " + rank.keySet().toString());
-		System.out.println("rank values : " + rank.values());
+
 		for (String task_id : cprank) {
-			System.out.println("  critical_task : "+ task_id);
 			update_myrank(task_id);
-			System.out.println("_______________________________");
 		}		
 	}
 	
 	
 	protected void update_myrank(String t_id) {
 		int length = aProblem.getTask(t_id).getDependedOnTasks().size();
-		logger.info(String.format(" number of parents:%d            ", length)); 
 		int[] ptur = new int[length];  //the order of rank upward values
 		String[] ptids = new String[length]; 
 		int j=0;
 		for (String parentTask_id : aProblem.getTask(t_id).getDependedOnTasks()) {
-			logger.info(String.format("*** t_id=%s parenttask_id=%s", t_id, parentTask_id));
 			if (myrank.containsKey(parentTask_id)){
 				length--;
 			}
@@ -163,9 +137,6 @@ public class CPHeft extends BaseSolver {
 				t=x+1;
 		}
 		myrank.put(t_id, t);
-		logger.info(String.format("   myrank=%d     task_id=%s", myrank.get(t_id), t_id));
-		System.out.println("myrank keySet : " + myrank.keySet().toString());
-		System.out.println("myrank values : " + myrank.values());
 	}
 	
 	
