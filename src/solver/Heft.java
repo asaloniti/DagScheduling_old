@@ -75,6 +75,7 @@ public class Heft extends BaseSolver {
 			rank.put(taskIds[i], i);
 			aProblem.getTask(taskIds[i]).setRank(i);
 		}
+		
 //		 System.out.println("\nRANKING OF TASKS BASED ON HEFT");
 //		 for (int i = 0; i < T; i++) {
 //			 logger.info(String.format("Rank=%d value=%.2f task=%s", i, c_ranku[i], taskIds[i]));
