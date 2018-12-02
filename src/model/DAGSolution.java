@@ -124,7 +124,6 @@ public class DAGSolution {
 		return efficiency;
 	}
 	
-	
 	public double[] computeputilization () {
 		double[] utilization  = new double[aProblem.getNumberOfProcessors()];
 		for (int p = 0; p < aProblem.getNumberOfProcessors(); p++) {

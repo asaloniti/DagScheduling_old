@@ -85,7 +85,6 @@ public class Problem {
 		return taList;
 	}
 
-
 	public void printProblemDetails() {
 		System.out.printf("Processors = %d\n", numberOfProcessors);
 		for (Task aTask : tasksList) {

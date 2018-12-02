@@ -66,7 +66,6 @@ public class CPHeft extends BaseSolver {
 			k++;
 		}
 		
-				
 		for (int i = 1; i < T; i++) {
 			for (int j = T - 1; j >= i; j--) {
 				if (c_ranku[j - 1] < c_ranku[j]) {

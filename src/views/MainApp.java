@@ -129,7 +129,6 @@ public class MainApp {
 		
 	}
 
-	
 	private void loadSolution(String fn) {
 		sol = DAGSolution.loadSolution(aProblem, fn);
 	}
