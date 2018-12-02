@@ -45,6 +45,7 @@ public class Heft extends BaseSolver {
 			}
 			solution.scheduleFinishTime(current_task, r_min_eft, min_eft);
 		}
+		solution.exportToSOL("heftsolfile");
 		// solution.display();
 	}
 

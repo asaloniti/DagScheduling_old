@@ -1,0 +1,20 @@
+digraph data6 {
+0 -> 1 [ label = 17 ];
+0 -> 4 [ label = 39 ];
+0 -> 6 [ label = 22 ];
+0 -> 9 [ label = 33 ];
+1 -> 2 [ label = 71 ];
+2 -> 3 [ label = 12 ];
+3 -> 12 [ label = 10 ];
+4 -> 5 [ label = 0 ];
+5 -> 11 [ label = 5 ];
+6 -> 7 [ label = 1 ];
+6 -> 8 [ label = 3 ];
+7 -> 13 [ label = 13 ];
+8 -> 10 [ label = 26 ];
+9 -> 10 [ label = 16 ];
+10 -> 13 [ label = 32 ];
+11 -> 12 [ label = 3 ];
+12 -> 13 [ label = 18 ];
+ }
+

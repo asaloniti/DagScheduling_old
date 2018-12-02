@@ -16,7 +16,7 @@ import model.Task;
 public class CPHeft extends BaseSolver {
 	final Logger logger = LoggerFactory.getLogger(CPHeft.class);
 	// rank is a Map having key the task_id and value the rank
-	protected Map<String, Integer> rank, myrank;
+	protected Map<String, Integer> rank, cprank;
 
 	public CPHeft(Problem aProblem) {
 		super(aProblem);
@@ -24,7 +24,7 @@ public class CPHeft extends BaseSolver {
 		for (Task aTask : aProblem.getTasks()) {
 			rank.put(aTask.getId(), -1);
 		}
-		myrank = new HashMap<String, Integer>();		
+		cprank = new HashMap<String, Integer>();		
 	}
 
 	public void solve() {
@@ -47,7 +47,8 @@ public class CPHeft extends BaseSolver {
 			}
 			solution.scheduleFinishTime(current_task, r_min_eft, min_eft);
 		}
-		// solution.display();
+		solution.exportToSOL("cpheftsolfile");
+		solution.display();
 	}
 	
 	protected void sortByRankUpwardValuesDesc() {
@@ -82,29 +83,29 @@ public class CPHeft extends BaseSolver {
 			}
 		}
 		
-		List<String> cprank=new ArrayList<String>();
+		List<String> cplink=new ArrayList<String>();
 		for (int i = 0; i < T; i++) {
 			rank.put(taskIds[i], i);
 			aProblem.getTask(taskIds[i]).setRank(i);
 			if (Math.abs(c_p[i] - c_p[0])<0.001) {
-				cprank.add(taskIds[i]);
+				cplink.add(taskIds[i]);
 			}
 		}
 	
 
-		for (String task_id : cprank) {
-			update_myrank(task_id);
+		for (String task_id : cplink) {
+			update_cprank(task_id);
 		}		
 	}
 	
-	
-	protected void update_myrank(String t_id) {
+	//Sort the tasks in scheduling queue by critical task, decreasing order of rank value and increasing order of predecessors.
+	protected void update_cprank(String t_id) {
 		int length = aProblem.getTask(t_id).getDependedOnTasks().size();
 		int[] ptur = new int[length];  //the order of rank upward values
 		String[] ptids = new String[length]; 
 		int j=0;
 		for (String parentTask_id : aProblem.getTask(t_id).getDependedOnTasks()) {
-			if (myrank.containsKey(parentTask_id)){
+			if (cprank.containsKey(parentTask_id)){
 				length--;
 			}
 			else {
@@ -128,22 +129,22 @@ public class CPHeft extends BaseSolver {
 		}
 	
 		for (int p = 0; p < length; p++) {
-			update_myrank(ptids[p]);
+			update_cprank(ptids[p]);
 		}
 		
 		int t=0;
-		for(Integer x: myrank.values()) {
+		for(Integer x: cprank.values()) {
 			if (x>=t)
 				t=x+1;
 		}
-		myrank.put(t_id, t);
+		cprank.put(t_id, t);
 	}
 	
 	
 
 	protected String findTaskHavingPriority(int priority) {
-		for (String task_id : myrank.keySet()) {
-			if (myrank.get(task_id) == priority)
+		for (String task_id : cprank.keySet()) {
+			if (cprank.get(task_id) == priority)
 				return task_id;
 		}
 		throw new IllegalStateException();

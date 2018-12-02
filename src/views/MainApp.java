@@ -58,12 +58,12 @@ public class MainApp {
 	}
 
 	void method1() {
-		loadDataset(loadFile("txt"));
+		loadDataset(loadFile(new File("txtfiles"), "txt"));
 		aProblem.printProblemDetails();
 	}
 	
 	void method2() {
-		loadDataset(loadFile("txt"));
+		loadDataset(loadFile(new File("txtfiles"), "txt"));
 		for (String node : aProblem.getTopologicalOrderList()) {
 			System.out.print(node + " ");
 		}
@@ -71,7 +71,7 @@ public class MainApp {
 	}
 	
 	void method3() {
-		loadDataset(loadFile("txt"));
+		loadDataset(loadFile(new File("txtfiles"), "txt"));
 		SimpleListScheduling sls = new SimpleListScheduling(aProblem);
 		sls.solve();
 		VisualizeJFrame app = new VisualizeJFrame(aProblem, sls.getSolution(),
@@ -87,7 +87,7 @@ public class MainApp {
 	}
 	
 	void method4() {
-		loadDataset(loadFile("txt"));
+		loadDataset(loadFile(new File("txtfiles"), "txt"));
 		Heft sls = new Heft(aProblem);
 		sls.solve();
 		VisualizeJFrame app = new VisualizeJFrame(aProblem, sls.getSolution(),
@@ -96,14 +96,13 @@ public class MainApp {
 
 		boolean feasible = aProblem.isFeasible(sls.getSolution());
 		if (feasible)
-			System.out
-					.println("Solution is feasible according to EXCLUSIVE PROCESSOR ALLOCATION and PRECEDENCE CONSTRAINTS");
+			System.out.println("Solution is feasible according to EXCLUSIVE PROCESSOR ALLOCATION and PRECEDENCE CONSTRAINTS");
 		else
 			System.out.println("Solution is NOT feasible");
 	}
 	
 	void method5() {
-		loadDataset(loadFile("txt"));
+		loadDataset(loadFile(new File("txtfiles"), "txt"));
 		CPHeft sls = new CPHeft(aProblem);
 		sls.solve();
 		VisualizeJFrame app = new VisualizeJFrame(aProblem, sls.getSolution(),
@@ -119,8 +118,8 @@ public class MainApp {
 	}
 
 	void method6() {
-		loadDataset(loadFile("txt"));
-		loadSolution(loadFile("sol"));
+		loadDataset(loadFile(new File("txtfiles"),"txt"));
+		loadSolution(loadFile(new File("solfiles"), "sol"));
 		FullLegalityChecker flc = new FullLegalityChecker(aProblem);
 		if (flc.isFeasible(sol) && flc.isComplete(sol))
 			System.out.println("Feasible solution");
@@ -146,9 +145,9 @@ public class MainApp {
 	}
 
 	
-	private String loadFile(String extension) {
+	private String loadFile(File folder, String extension) {
 		String file_name = null;
-		File folder = new File("datasets");
+		//File folder = new File("txtfiles");
 		File[] listOfFiles = folder.listFiles();
 		List<File> matchingFiles = new ArrayList<File>();
 		for (File aFile : listOfFiles) {

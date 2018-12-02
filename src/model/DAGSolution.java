@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -13,6 +14,8 @@ import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import utils.Pair;
 
 public class DAGSolution {
 
@@ -82,11 +85,77 @@ public class DAGSolution {
 					taskToFinishTime.get(aTask.getId()) - c,
 					taskToFinishTime.get(aTask.getId()));
 		}
-		for (int p = 0; p < processorReadyTime.length; p++) {
-			System.out.printf("Processor %d finishes work at %d\n", p,
-					processorReadyTime[p]);
+		System.out.println("makespan = "+ computemakespan());
+		System.out.println("speedup = "+ computespeedup());
+		System.out.println("efficiency = "+ computeefficiency());
+		for (int p = 0; p < aProblem.getNumberOfProcessors(); p++) {
+			System.out.println("utilization[" + p + "] = "+ computeputilization()[p]);	
 		}
 	}
+	
+	public int computemakespan() {
+		int makespan=0;
+		for (int p = 0; p < processorReadyTime.length; p++) {
+			if (processorReadyTime[p]>makespan) {
+				makespan = processorReadyTime[p];
+			}
+		}
+		//System.out.println("makespan = "+ makespan);
+		return makespan;
+	}
+	
+	public double computespeedup() {
+		int min = Integer.MAX_VALUE;
+		for (int p = 0; p < aProblem.getNumberOfProcessors(); p++) {
+			int s = 0;
+			for (Task aTask : aProblem.getTasks()) {
+				s = s + aTask.getDemandPerResource()[p];
+			}
+			if (s < min) {
+				min = s;
+			}
+		}
+		double speedup = (double) min/computemakespan();
+		return speedup;
+	}
+	
+	public double computeefficiency() {
+		double efficiency = computespeedup()/aProblem.getNumberOfProcessors();
+		return efficiency;
+	}
+	
+	
+	public double[] computeputilization () {
+		double[] utilization  = new double[aProblem.getNumberOfProcessors()];
+		for (int p = 0; p < aProblem.getNumberOfProcessors(); p++) {
+			int s = 0;
+			for (Task aTask : aProblem.getTasks()) {
+				if (taskMapping.get(aTask.getId()) == p) {
+					s = s + aTask.getDemandIn(p);
+				}
+				utilization[p] = 100* (double) s/computemakespan();
+			}
+		}
+		return utilization;
+	}
+	
+	public void exportToSOL(String name) {
+		StringBuilder sb = new StringBuilder();
+		for (Task aTask : aProblem.getTasks()) {
+			//int resource_index = taskMapping.get(aTask.getId());
+			//int c = aTask.getDemandIn(resource_index);
+			sb.append(String.format("%s,%d,%d\n", aTask.getId(), taskMapping.get(aTask.getId()),taskToFinishTime.get(aTask.getId())));
+		}
+		PrintWriter out;
+		try {
+			out = new PrintWriter("solfiles\\" + name + ".sol");
+			out.println(sb.toString());
+			out.close();
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		}
+	}
+	
 
 	public int getAllTasksEarliestTimeInResource(int resource_id) {
 		int max = 0;

@@ -72,7 +72,7 @@ public class PlanetaGen {
 				aTask.cpu = p;
 				aTask.start = timelines.get(p).get(i);
 				aTask.end = timelines.get(p).get(i + 1);
-				System.out.println("t_s="+ aTask.start + "   t_e="+ aTask.end);//vvvvvvvvvvvvv
+				//System.out.println("t_s="+ aTask.start + "   t_e="+ aTask.end);
 				allTasks.add(aTask);
 			}
 		}
@@ -143,12 +143,12 @@ public class PlanetaGen {
 			List<Integer> cc_of_atask = new ArrayList<Integer>();
 			int comp_c_0 = (int)(t.end - t.start);
 			cc_of_atask.add(comp_c_0);
-			System.out.println();
-			System.out.println("   s=" + t.start + "   e=" + t.end);
-			System.out.println("  comp="+comp_c_0);
+//			System.out.println();
+//			System.out.println("   s=" + t.start + "   e=" + t.end);
+//			System.out.println("  comp="+comp_c_0);
 			for (int p = 0; p < processors; p++) {
 				int comp_c_p = randomGenerator.nextInt(comp_c_0 + 1) + (int)(comp_c_0 * 0.5);
-				System.out.println("  p=" + p + "  comp_c_p=" + comp_c_p);
+				//System.out.println("  p=" + p + "  comp_c_p=" + comp_c_p);
 				cc_of_atask.add(comp_c_p);
 			}
 			comp_costs.add(cc_of_atask);
@@ -181,7 +181,7 @@ public class PlanetaGen {
 		for (Pair pair : deps) {
 			sb.append(String.format("%d->%d ", pair.x, pair.y));
 		}
-		System.out.println(sb.toString());
+		//System.out.println(sb.toString());
 	}
 	
 	public void exportToTXT(String name) {
@@ -205,10 +205,10 @@ public class PlanetaGen {
 			i++;
 			sb.append(String.format("\n%d %d %d", pair.x, pair.y, comm_costs.get(i-1)));
 		}
-		System.out.println(sb.toString());
+		//System.out.println(sb.toString());
 		PrintWriter out;
 		try {
-			out = new PrintWriter(name + ".txt");
+			out = new PrintWriter("txtfiles\\" + name + ".txt");
 			out.println(sb.toString());
 			out.close();
 		} catch (FileNotFoundException e) {
@@ -229,10 +229,10 @@ public class PlanetaGen {
 			sb.append(String.format("%d -> %d [ label = %d ];\n", p.x, p.y, comm_costs.get(i-1)));
 		}
 		sb.append(" }\n");
-		System.out.println(sb.toString());
+		//System.out.println(sb.toString());
 		PrintWriter out;
 		try {
-			out = new PrintWriter(name + ".dot");
+			out = new PrintWriter("dotfiles\\" + name + ".dot");
 			out.println(sb.toString());
 			out.close();
 		} catch (FileNotFoundException e) {
@@ -240,7 +240,7 @@ public class PlanetaGen {
 		}
 	}
 
-	private static void small_instance() {
+	private static void small_instance(String name) {
 		double length = 100.0;
 		int processors = 3;
 		int tasks = 20;
@@ -249,8 +249,8 @@ public class PlanetaGen {
 		PlanetaGen generator = new PlanetaGen(length, processors, tasks, fanout, maxDistanceFactor);
 		generator.generate();
 		generator.printDetails();
-		generator.exportToDOT("small");
-		generator.exportToTXT("datasets\\data_s");
+		generator.exportToDOT(name);
+		generator.exportToTXT(name);
 	}
 
 	private static void big_instance() {
@@ -289,8 +289,10 @@ public class PlanetaGen {
 	
 
 	public static void main(String[] args) {
-		small_instance();
-		//big_instance();
-		
+		for(int i = 0; i < 10; i++) {
+			small_instance("data"+i);
+		}
 	}
+	//big_instance();
+		
 }
