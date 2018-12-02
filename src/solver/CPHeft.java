@@ -49,6 +49,7 @@ public class CPHeft extends BaseSolver {
 		}
 		solution.exportToSOL("cpheftsolfile");
 		solution.display();
+		System.out.println( solution.computemakespan());
 	}
 	
 	protected void sortByRankUpwardValuesDesc() {

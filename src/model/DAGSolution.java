@@ -32,6 +32,8 @@ public class DAGSolution {
 			in = new BufferedReader(new FileReader(fn));
 			String str;
 			while ((str = in.readLine()) != null) {
+				if (str.length()==0)
+					continue;
 				String[] s = str.split(",");
 				sol.scheduleStartTime(s[0], Integer.parseInt(s[1]), Integer.parseInt(s[2]));
 			}

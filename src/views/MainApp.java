@@ -35,7 +35,9 @@ public class MainApp {
 			System.out.println("3. Start Time Minimization + visualize schedule");
 			System.out.println("4. Heft + visualize schedule");
 			System.out.println("5. CPHeft + visualize schedule");
-			System.out.println("6. Load solution");
+			System.out.println("6. Heft (ALL)");
+			System.out.println("7. CPHeft (ALL)");
+			System.out.println("8. Load solution");
 			System.out.println("0. Exit");
 			int c = in.nextInt();
 			if (c == 1) {
@@ -49,8 +51,12 @@ public class MainApp {
 			} else if (c == 5) {
 				method5();
 			} else if (c == 6) {
-				method6();	
-			}else if (c == 0) {
+				method6();
+			} else if (c == 7) {
+				method7();
+			} else if (c == 8) {
+				method8();	
+			} else if (c == 0) {
 				flag = false;	
 				in.close();
 			}	
@@ -116,8 +122,26 @@ public class MainApp {
 		else
 			System.out.println("Solution is NOT feasible");
 	}
-
+	
 	void method6() {
+		//int s = 0;
+		for(int i = 0; i < 10; i++) {
+			loadDataset("txtfiles\\data"+i+".txt");
+			Heft sls = new Heft(aProblem);
+			sls.solve();
+			//s = s + ......computemakespan();
+		}
+	}
+	
+	void method7() {
+		for(int i = 0; i < 10; i++) {
+			loadDataset("txtfiles\\data"+i+".txt");
+			CPHeft sls = new CPHeft(aProblem);
+			sls.solve();
+		}
+	}
+
+	void method8() {
 		loadDataset(loadFile(new File("txtfiles"),"txt"));
 		loadSolution(loadFile(new File("solfiles"), "sol"));
 		FullLegalityChecker flc = new FullLegalityChecker(aProblem);
