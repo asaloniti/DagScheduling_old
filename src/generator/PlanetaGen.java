@@ -287,7 +287,6 @@ public class PlanetaGen {
 		}
 	}
 	
-
 	public static void main(String[] args) {
 		for(int i = 0; i < 10; i++) {
 			small_instance("data"+i);
