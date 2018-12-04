@@ -1,8 +1,10 @@
 package model;
 
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
@@ -138,6 +140,26 @@ public class DAGSolution {
 			}
 		}
 		return utilization;
+	}
+	
+	public void exportMetrics(String name) {
+		StringBuilder sb = new StringBuilder();
+	//sb.append(String.format("makespan,speedup,efficiency,processor utilization\n"));
+		sb.append(String.format("\n%d\t%f\t%f\t",computemakespan(), computespeedup(),computeefficiency()));
+		for (int p = 0; p < aProblem.getNumberOfProcessors(); p++) {
+			sb.append(String.format("\t%f",computeputilization()[p]));	
+		}
+		FileWriter out; 
+		BufferedWriter bw;
+		try {
+			out = new FileWriter("solfiles\\" + name + ".txt", true);
+			bw = new BufferedWriter(out);
+			bw.write(sb.toString());
+			bw.close();
+			out.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 	
 	public void exportToSOL(String name) {

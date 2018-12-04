@@ -82,7 +82,7 @@ public class MainApp {
 		sls.solve();
 		VisualizeJFrame app = new VisualizeJFrame(aProblem, sls.getSolution(),
 				480, 640, filename);
-		app.createAndShowGUI();
+		app.createAndShowGUI("SimpleListScheduling");
 
 		boolean feasible = aProblem.isFeasible(sls.getSolution());
 		if (feasible)
@@ -98,7 +98,7 @@ public class MainApp {
 		sls.solve();
 		VisualizeJFrame app = new VisualizeJFrame(aProblem, sls.getSolution(),
 				480, 640, filename);
-		app.createAndShowGUI();
+		app.createAndShowGUI("HEFT");
 
 		boolean feasible = aProblem.isFeasible(sls.getSolution());
 		if (feasible)
@@ -113,7 +113,7 @@ public class MainApp {
 		sls.solve();
 		VisualizeJFrame app = new VisualizeJFrame(aProblem, sls.getSolution(),
 				480, 640, filename);
-		app.createAndShowGUI();
+		app.createAndShowGUI("CPHEFT");
 
 		boolean feasible = aProblem.isFeasible(sls.getSolution());
 		if (feasible)
@@ -129,7 +129,6 @@ public class MainApp {
 			loadDataset("txtfiles\\data"+i+".txt");
 			Heft sls = new Heft(aProblem);
 			sls.solve();
-			//s = s + ......computemakespan();
 		}
 	}
 	

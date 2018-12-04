@@ -16,7 +16,7 @@ import java.util.Set;
 
 import utils.Pair;
 
-public class PlanetaGen {
+public class DAGGenerator {
 
 	private double length;
 	private int processors;
@@ -33,7 +33,7 @@ public class PlanetaGen {
 	private List<List<Integer>> comp_costs;
 	private List<Integer> comm_costs;
 
-	public PlanetaGen(double l, int p, int t, int f, int m) {
+	public DAGGenerator(double l, int p, int t, int f, int m) {
 		length = l;
 		processors = p;
 		tasks = t;
@@ -246,7 +246,7 @@ public class PlanetaGen {
 		int tasks = 20;
 		int fanout = 3;
 		int maxDistanceFactor = 10;
-		PlanetaGen generator = new PlanetaGen(length, processors, tasks, fanout, maxDistanceFactor);
+		DAGGenerator generator = new DAGGenerator(length, processors, tasks, fanout, maxDistanceFactor);
 		generator.generate();
 		generator.printDetails();
 		generator.exportToDOT(name);
@@ -259,7 +259,7 @@ public class PlanetaGen {
 		int tasks = 100;
 		int fanout = 6;
 		int maxDistanceFactor = 7;
-		PlanetaGen generator = new PlanetaGen(length, processors, tasks, fanout, maxDistanceFactor);
+		DAGGenerator generator = new DAGGenerator(length, processors, tasks, fanout, maxDistanceFactor);
 		generator.generate();
 		generator.printDetails();
 		generator.exportToDOT("big");

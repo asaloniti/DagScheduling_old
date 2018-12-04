@@ -47,9 +47,9 @@ public class VisualizeJFrame {
 		pane.add(titleLabel, BorderLayout.NORTH);
 	}
 
-	public void createAndShowGUI() {
+	public void createAndShowGUI(String algorithm) {
 		// Create and set up the window.
-		frame = new JFrame("Schedule Visualization");
+		frame = new JFrame("Schedule Visualization - "+algorithm);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
 		// Set up the content pane.
@@ -75,6 +75,6 @@ public class VisualizeJFrame {
 		DAGSolution aSolution = sls.getSolution();
 		VisualizeJFrame app = new VisualizeJFrame(aProblem, aSolution, 600,
 				640, fn);
-		app.createAndShowGUI();
+		app.createAndShowGUI("SimpleListScheduling");
 	}
 }
