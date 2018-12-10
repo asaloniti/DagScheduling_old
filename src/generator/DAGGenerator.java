@@ -60,6 +60,8 @@ public class DAGGenerator {
 		int t_id=1;
 		for (int p = 0; p < processors; p++) {
 			int number_of_tasks = randomGenerator.nextInt(tasks / processors) + 1;
+//			int number_of_tasks = (int)(tasks / processors);
+//			System.out.println(number_of_tasks);
 			for (int j = 0; j < number_of_tasks; j++) {
 				double time = randomGenerator.nextDouble() * length;
 				timelines.get(p).add(time);
@@ -93,8 +95,11 @@ public class DAGGenerator {
 						double min = d1;
 						if (d2 < min)
 							min = d2;
-						if (min > length / maxdist)
+						if (min > length / maxdist) {
+//							System.out.println(task1_i + "..." + task2_i +"   " + min);
 							continue;
+						}
+						System.out.println(task1_i + "..." + task2_i +"   " + min);
 						retry = false;
 					}
 				}
@@ -142,13 +147,10 @@ public class DAGGenerator {
 		for (GTask t : allTasks) {
 			List<Integer> cc_of_atask = new ArrayList<Integer>();
 			int comp_c_0 = (int)(t.end - t.start);
-			cc_of_atask.add(comp_c_0);
-//			System.out.println();
-//			System.out.println("   s=" + t.start + "   e=" + t.end);
 //			System.out.println("  comp="+comp_c_0);
 			for (int p = 0; p < processors; p++) {
-				int comp_c_p = randomGenerator.nextInt(comp_c_0 + 1) + (int)(comp_c_0 * 0.5);
-				//System.out.println("  p=" + p + "  comp_c_p=" + comp_c_p);
+				int comp_c_p = randomGenerator.nextInt(comp_c_0) + 1 + (int)(comp_c_0 * 0.25);
+//				System.out.println("  p=" + p + "  comp_c_p=" + comp_c_p);
 				cc_of_atask.add(comp_c_p);
 			}
 			comp_costs.add(cc_of_atask);
@@ -161,9 +163,13 @@ public class DAGGenerator {
 		for (Pair pair : deps) {
 			double temp = 0;
 			for (int p = 0; p < processors; p++) {
-				temp = temp + (comp_costs.get(pair.x).get(p) + comp_costs.get(pair.y).get(p)/2);
+				temp = temp + (comp_costs.get(pair.x).get(p) + comp_costs.get(pair.y).get(p))/2;
 			}
-			double ccr = new Random().nextDouble();
+			double ccr = randomGenerator.nextDouble();
+			//System.out.println(ccr);
+//			double ccr = 1;
+//			double ccr = 0.5;
+//			double ccr = 2;
 			int cc_apair = (int)((temp /processors)*ccr);
 			comm_costs.add(cc_apair);
 		}
@@ -243,7 +249,7 @@ public class DAGGenerator {
 	private static void small_instance(String name) {
 		double length = 100.0;
 		int processors = 3;
-		int tasks = 20;
+		int tasks = 10;
 		int fanout = 3;
 		int maxDistanceFactor = 10;
 		DAGGenerator generator = new DAGGenerator(length, processors, tasks, fanout, maxDistanceFactor);
@@ -288,10 +294,10 @@ public class DAGGenerator {
 	}
 	
 	public static void main(String[] args) {
-		for(int i = 0; i < 10; i++) {
-			small_instance("data"+i);
-		}
+//		for(int i = 0; i < 10; i++) {
+//			small_instance("data"+i);
+//		}
+		small_instance("data");
+		//big_instance();
 	}
-	//big_instance();
-		
 }

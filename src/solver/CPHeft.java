@@ -48,7 +48,7 @@ public class CPHeft extends BaseSolver {
 			solution.scheduleFinishTime(current_task, r_min_eft, min_eft);
 		}
 		solution.exportToSOL("cpheftsolfile");
-		solution.exportMetrics("cphefmetrics");
+		solution.exportMetrics("cpheftmetrics");
 		solution.display();
 		//System.out.println( solution.computemakespan());
 	}

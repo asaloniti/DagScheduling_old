@@ -1,20 +1,21 @@
 digraph data7 {
-0 -> 1 [ label = 74 ];
-0 -> 4 [ label = 48 ];
-0 -> 6 [ label = 6 ];
-0 -> 9 [ label = 40 ];
-1 -> 2 [ label = 40 ];
-2 -> 3 [ label = 2 ];
-3 -> 13 [ label = 16 ];
-4 -> 5 [ label = 4 ];
-5 -> 11 [ label = 24 ];
+0 -> 1 [ label = 33 ];
+0 -> 3 [ label = 45 ];
+1 -> 2 [ label = 21 ];
+1 -> 4 [ label = 5 ];
+1 -> 7 [ label = 1 ];
+1 -> 8 [ label = 9 ];
+2 -> 5 [ label = 5 ];
+3 -> 4 [ label = 20 ];
+3 -> 8 [ label = 28 ];
+4 -> 5 [ label = 9 ];
+4 -> 6 [ label = 5 ];
+5 -> 6 [ label = 15 ];
+5 -> 7 [ label = 7 ];
+5 -> 8 [ label = 13 ];
 6 -> 7 [ label = 12 ];
-6 -> 8 [ label = 6 ];
-7 -> 8 [ label = 5 ];
-8 -> 10 [ label = 21 ];
-9 -> 10 [ label = 28 ];
-10 -> 13 [ label = 36 ];
-11 -> 12 [ label = 3 ];
-12 -> 13 [ label = 7 ];
+6 -> 8 [ label = 7 ];
+7 -> 8 [ label = 4 ];
+8 -> 9 [ label = 10 ];
  }
 
