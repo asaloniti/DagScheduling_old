@@ -18,9 +18,9 @@ public class GTask {
 	void addPredecessor(GTask atask) {
 		predecessors.add(atask);
 	}
-	
+
 	@Override
 	public String toString() {
-		return String.format("id=%d", id);
+		return String.format("[id=%d cpu=%d %.2f-%.2f]", id, cpu, start, end);
 	}
 }

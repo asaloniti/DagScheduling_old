@@ -1,15 +1,15 @@
 digraph data {
-0 -> 1 [ label = 34 ];
-0 -> 3 [ label = 19 ];
-0 -> 5 [ label = 2 ];
-1 -> 2 [ label = 27 ];
-2 -> 9 [ label = 4 ];
-3 -> 4 [ label = 15 ];
-3 -> 8 [ label = 21 ];
-4 -> 9 [ label = 5 ];
-5 -> 6 [ label = 13 ];
-6 -> 7 [ label = 8 ];
-7 -> 8 [ label = 1 ];
-8 -> 9 [ label = 7 ];
+0 -> 1 [ label = 172 ];
+0 -> 4 [ label = 144 ];
+0 -> 7 [ label = 71 ];
+1 -> 2 [ label = 125 ];
+2 -> 3 [ label = 91 ];
+3 -> 5 [ label = 136 ];
+4 -> 5 [ label = 147 ];
+4 -> 6 [ label = 94 ];
+5 -> 9 [ label = 68 ];
+6 -> 9 [ label = 119 ];
+7 -> 8 [ label = 129 ];
+8 -> 9 [ label = 96 ];
  }
 

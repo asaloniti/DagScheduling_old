@@ -29,9 +29,9 @@ public class DAGGenerator {
 	private Set<Pair> dependencies;
 	private long seed = 1234567890L;
 	private Random randomGenerator;
-	
-	private List<List<Integer>> comp_costs;
-	private List<Integer> comm_costs;
+
+	private List<List<Integer>> computation_costs;
+	private List<Integer> communication_costs;
 
 	public DAGGenerator(double l, int p, int t, int f, int m) {
 		length = l;
@@ -57,11 +57,9 @@ public class DAGGenerator {
 	}
 
 	public void generate() {
-		int t_id=1;
+		int t_id = 1;
 		for (int p = 0; p < processors; p++) {
 			int number_of_tasks = randomGenerator.nextInt(tasks / processors) + 1;
-//			int number_of_tasks = (int)(tasks / processors);
-//			System.out.println(number_of_tasks);
 			for (int j = 0; j < number_of_tasks; j++) {
 				double time = randomGenerator.nextDouble() * length;
 				timelines.get(p).add(time);
@@ -74,14 +72,13 @@ public class DAGGenerator {
 				aTask.cpu = p;
 				aTask.start = timelines.get(p).get(i);
 				aTask.end = timelines.get(p).get(i + 1);
-				//System.out.println("t_s="+ aTask.start + "   t_e="+ aTask.end);
 				allTasks.add(aTask);
 			}
 		}
 
 		for (GTask task1 : allTasks) {
 			int task1_i = allTasks.indexOf(task1);
-			int fo = new Random().nextInt(fanout) + 1;
+			int fo = randomGenerator.nextInt(fanout) + 1;
 			for (int i = 0; i < fo; i++) {
 				boolean retry = true;
 				int task2_i = -1;
@@ -96,10 +93,8 @@ public class DAGGenerator {
 						if (d2 < min)
 							min = d2;
 						if (min > length / maxdist) {
-//							System.out.println(task1_i + "..." + task2_i +"   " + min);
 							continue;
 						}
-						System.out.println(task1_i + "..." + task2_i +"   " + min);
 						retry = false;
 					}
 				}
@@ -122,12 +117,12 @@ public class DAGGenerator {
 		start.id = 0;
 		start.cpu = 0;
 		start.start = 0.0;
-		start.end = timelines.get(start.cpu).get(1);
+		start.end = 0.0;
 		GTask end = new GTask();
 		end.id = allTasks.size() + 1;
-		end.cpu = processors-1;
-		end.start = timelines.get(end.cpu).get(1);//????????????????
-		end.end = timelines.get(end.cpu).get(2);//??????????????
+		end.cpu = 0;
+		end.start = length;
+		end.end = length;
 		for (GTask task1 : allTasks) {
 			if (task1.successors.isEmpty()) {
 				task1.addSuccessor(end);
@@ -140,46 +135,56 @@ public class DAGGenerator {
 		}
 		allTasks.add(end);
 		allTasks.add(0, start);
-		
-		
-		 //task computation costs on each processor
-		comp_costs = new ArrayList<>();
+
+		// task computation costs on each processor
+		int total_computation_cost = 0;
+		computation_costs = new ArrayList<>();
 		for (GTask t : allTasks) {
-			List<Integer> cc_of_atask = new ArrayList<Integer>();
-			int comp_c_0 = (int)(t.end - t.start);
-//			System.out.println("  comp="+comp_c_0);
+			List<Integer> computation_cost_of_task = new ArrayList<Integer>();
+			double computation_cost = t.end - t.start;
 			for (int p = 0; p < processors; p++) {
-				int comp_c_p = randomGenerator.nextInt(comp_c_0) + 1 + (int)(comp_c_0 * 0.25);
-//				System.out.println("  p=" + p + "  comp_c_p=" + comp_c_p);
-				cc_of_atask.add(comp_c_p);
+				int temp;
+				if (t.cpu == p) {
+					temp = (int) computation_cost;
+					computation_cost_of_task.add(temp);
+				} else {
+					temp = (int) (randomGenerator.nextDouble() * computation_cost + 0.25 * computation_cost);
+					computation_cost_of_task.add(temp);
+				}
+				total_computation_cost += temp;
 			}
-			comp_costs.add(cc_of_atask);
+			System.out.print(t + " ");
+			for (Integer c : computation_cost_of_task)
+				System.out.printf("%d ", c);
+			System.out.println();
+			computation_costs.add(computation_cost_of_task);
 		}
-		
-		//from_task_id to_task_id weight
-		comm_costs = new ArrayList<Integer>();
-		List<Pair> deps = new ArrayList<>(dependencies);
-		Collections.sort(deps);
-		for (Pair pair : deps) {
-			double temp = 0;
-			for (int p = 0; p < processors; p++) {
-				temp = temp + (comp_costs.get(pair.x).get(p) + comp_costs.get(pair.y).get(p))/2;
-			}
-			double ccr = randomGenerator.nextDouble();
-			//System.out.println(ccr);
-//			double ccr = 1;
-//			double ccr = 0.5;
-//			double ccr = 2;
-			int cc_apair = (int)((temp /processors)*ccr);
-			comm_costs.add(cc_apair);
+
+		double CCR = 0.5; 
+		double total_communication_cost = total_computation_cost / CCR;
+		int actual_total_communication_cost = 0;
+		int number_of_dependencies = dependencies.size();
+		double average_communication_cost = total_communication_cost / number_of_dependencies;
+		List<Pair> sorted_dependencies = new ArrayList<>(dependencies);
+		Collections.sort(sorted_dependencies);
+		communication_costs = new ArrayList<Integer>();
+		for (Pair pair : sorted_dependencies) {
+			int temp = (int) (average_communication_cost / 2.0
+					+ randomGenerator.nextDouble() * average_communication_cost);
+			communication_costs.add(temp);
+			actual_total_communication_cost += temp;
 		}
+
+		double actualCCR = (double) total_computation_cost / (double) actual_total_communication_cost;
+		System.out.println("Actual CCR " + actualCCR);
+
 	}
 
 	public void printDetails() {
 		StringBuffer sb = new StringBuffer();
 		sb.append("Tasks(" + allTasks.size() + "):\n");
 		for (GTask t : allTasks) {
-			sb.append(String.format("%.1f-%.1f(%d) ", t.start, t.end, t.cpu));
+			sb.append(t.toString() + " ");
 		}
 		sb.append("\nDependencies(" + dependencies.size() + "):\n");
 		List<Pair> deps = new ArrayList<>(dependencies);
@@ -187,9 +192,9 @@ public class DAGGenerator {
 		for (Pair pair : deps) {
 			sb.append(String.format("%d->%d ", pair.x, pair.y));
 		}
-		//System.out.println(sb.toString());
+		System.out.println(sb.toString());
 	}
-	
+
 	public void exportToTXT(String name) {
 		StringBuffer sb = new StringBuffer();
 		sb.append("#\n");
@@ -199,7 +204,7 @@ public class DAGGenerator {
 		for (GTask t : allTasks) {
 			sb.append(String.format("\n%d ", t.id));
 			for (int p = 0; p < processors; p++) {
-				sb.append(String.format("%d ", comp_costs.get(t.id).get(p)));
+				sb.append(String.format("%d ", computation_costs.get(t.id).get(p)));
 			}
 		}
 		sb.append("\nDependencies:" + dependencies.size() + "\n");
@@ -209,9 +214,9 @@ public class DAGGenerator {
 		int i = 0;
 		for (Pair pair : deps) {
 			i++;
-			sb.append(String.format("\n%d %d %d", pair.x, pair.y, comm_costs.get(i-1)));
+			sb.append(String.format("\n%d %d %d", pair.x, pair.y, communication_costs.get(i - 1)));
 		}
-		//System.out.println(sb.toString());
+		// System.out.println(sb.toString());
 		PrintWriter out;
 		try {
 			out = new PrintWriter("txtfiles\\" + name + ".txt");
@@ -232,10 +237,10 @@ public class DAGGenerator {
 		int i = 0;
 		for (Pair p : deps) {
 			i++;
-			sb.append(String.format("%d -> %d [ label = %d ];\n", p.x, p.y, comm_costs.get(i-1)));
+			sb.append(String.format("%d -> %d [ label = %d ];\n", p.x, p.y, communication_costs.get(i - 1)));
 		}
 		sb.append(" }\n");
-		//System.out.println(sb.toString());
+		// System.out.println(sb.toString());
 		PrintWriter out;
 		try {
 			out = new PrintWriter("dotfiles\\" + name + ".dot");
@@ -253,6 +258,7 @@ public class DAGGenerator {
 		int fanout = 3;
 		int maxDistanceFactor = 10;
 		DAGGenerator generator = new DAGGenerator(length, processors, tasks, fanout, maxDistanceFactor);
+		generator.setSeed(new Random().nextLong());
 		generator.generate();
 		generator.printDetails();
 		generator.exportToDOT(name);
@@ -271,33 +277,34 @@ public class DAGGenerator {
 		generator.exportToDOT("big");
 		generator.exportToTXT("datasets\\data_b");
 	}
-	
+
 	public static boolean log = false;
+
 	private static void writeFile(String contents, String FileName) {
 		try {
 			OutputStream stream = new FileOutputStream(FileName);
-			BufferedOutputStream output = new BufferedOutputStream(stream,4096);
-			for(int i = 0; i < contents.length(); i+=2048) {
-				if(i+2048<contents.length())
-					output.write(contents.substring(i, i+2048).getBytes());
+			BufferedOutputStream output = new BufferedOutputStream(stream, 4096);
+			for (int i = 0; i < contents.length(); i += 2048) {
+				if (i + 2048 < contents.length())
+					output.write(contents.substring(i, i + 2048).getBytes());
 				else
 					output.write(contents.substring(i).getBytes());
 			}
-			if(log)
+			if (log)
 				System.out.println("Write Finished, Closing Stream");
 			output.close();
-			if(log)
+			if (log)
 				System.out.println("Stream closed");
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 	}
-	
+
 	public static void main(String[] args) {
 //		for(int i = 0; i < 10; i++) {
 //			small_instance("data"+i);
 //		}
 		small_instance("data");
-		//big_instance();
+		// big_instance();
 	}
 }
